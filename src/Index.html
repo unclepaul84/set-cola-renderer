@@ -1,0 +1,65 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Render</title>
+</head>
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="https://d3js.org/d3-timer.v1.min.js"></script>
+<script src="https://d3js.org/d3-color.v1.min.js"></script>
+<script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script src="https://d3js.org/d3-scale.v1.min.js"></script>
+<script src="https://d3js.org/d3-shape.v1.min.js"></script>
+
+<script src="js/cola.min.js"></script>
+
+<script src="js/setcola.js"></script>
+
+
+<script src="js/setColaRenderer.js" charset="utf-8"></script>
+
+<body>
+    <svg class="graph" style="height: 500px; width:100%">
+        <defs>
+            <filter x="0" y="0" width="1" height="1" id="solid">
+                <feFlood flood-color="white" />
+                <feComposite in="SourceGraphic" />
+            </filter>
+        </defs>
+    </svg>
+</body>
+
+<script>
+
+    let r = new setColaRenderer();
+
+    var graph = {
+        "nodes": [
+            { "name": "aaaaaaaaaa" },
+            { "name": "bbbbbbbbbb" }
+        ],
+        "links": [
+            { "source": 0, "target": 1 }
+        ],
+        "constraintDefinitions": [
+            {
+                "name": "sample",
+                "forEach": [{ "constraint": "align", "axis": "x" }]
+            }
+        ]
+    };
+
+    var layout = setcola
+        .nodes(graph.nodes)
+        .links(graph.links)
+        .guides(graph.guides || [])
+        .constraints(graph.constraintDefinitions)
+        .gap(r.options['constgap'])
+        .layout();
+
+        r.draw(layout);
+
+</script>
+
+</html>
