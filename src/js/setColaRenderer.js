@@ -9,11 +9,14 @@
   var styling = {};
 
   styling.labeldx = function (d) {
-    return d.width / 2 - 7;
+    var offset = 26;
+    if(d._width === 24) offset = 7;
+    return d._width/2 - offset;
   };
 
   styling.labeldy = function (d) {
-    return d.width / 2 + 4;
+    var pad = d.pad || 0;
+    return d._height/2 + 5;
   };
 
   styling.labelText = function (d) {
@@ -21,7 +24,7 @@
   };
 
   styling.labelSize = function (d) {
-    return '12pt';
+    return '9pt';
   };
 
   styling.labelStyle = function (d) {
@@ -36,6 +39,13 @@
     return 'black';
   };
 
+
+  
+  styling.options = {
+    'showLabels': true,
+    'cornerradius': 0
+  };
+
   styling.options = {
     'edgeref': '',
     'noconst': 50,
@@ -45,7 +55,7 @@
     'jaccard': 0,
     'symmetric': 0,
     'constgap': 40,
-    'nodesize': 14,
+    'nodesize': 30,
     'nodepad': 0,
     'debugprint': false,
     'layoutnode': false,
@@ -55,10 +65,10 @@
     'curved': false,
     'multiple': false,
     'edgelabels': false,
-    'fillprop': 'color',
-    'showLabels': false,
-    'showLabelsOnTop': true,
-    'cornerradius': 'default',
+    'fillprop': false,
+    'showLabels': true,
+    'showLabelsOnTop': false,
+    'cornerradius': '0',
     'targetsvgclass': 'graph'
   };
 
@@ -71,6 +81,14 @@
     var graph = {};
 
     graph.nodeColor = function (d) {
+
+
+
+      if( typeof renderer.options['fillprop'] == 'boolean' && !renderer.options['fillprop']) // by default color is white
+      {
+        return "white";
+      }
+
       var fillprop = renderer.options['fillprop'];
       var value = d[fillprop] || 0.5;
       if (fillprop === 'color') {
@@ -110,6 +128,7 @@
       renderer.options = Object.assign(renderer.options, styling.options);
       renderer.options = Object.assign(renderer.options, options);
 
+      console.log('setOptions', renderer.options);
     };
 
     renderer.setStyle = function (newStyle) {
@@ -490,9 +509,9 @@
         text.attr('class', 'text-label')
           .attr('dx', style.labeldx)
           .attr('dy', style.labeldy)
-          .attr('filter', 'url(#solid)')
+    
           .style('fill', style.labelColor)
-          .style('opacity', 0.7)
+          .style('opacity',1)
           .style('font-size', style.labelSize)
           .style('font-style', style.labelStyle);
       } else if (renderer.options['showLabelsOnTop']) {
@@ -508,9 +527,8 @@
         text.attr('class', 'text-label')
           .attr('dx', style.labeldx)
           .attr('dy', style.labeldy)
-          .attr('filter', 'url(#solid)')
           .style('fill', style.labelColor)
-          .style('opacity', 0.7)
+          .style('opacity', 1)
           .style('font-size', style.labelSize)
           .style('font-style', style.labelStyle);
       }
@@ -815,7 +833,9 @@
 
     renderer.defaultOptions = function (layout) {
       var type = layout.nodes[renderer.options['fillprop']];
-      renderer.color = (typeof type == 'string') ? d3.scaleOrdinal(d3.schemeDark2) : d3.scaleSequential(d3.interpolateYlGnBu);
+
+         renderer.color = (typeof type == 'string') ? d3.scaleOrdinal(d3.schemeDark2) : d3.scaleSequential(d3.interpolateYlGnBu);
+
 
       layout.nodes.forEach(function (node) {
         node._width = node.width || node.size || renderer.options['nodesize'];
