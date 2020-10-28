@@ -9,14 +9,17 @@
   var styling = {};
 
   styling.labeldx = function (d) {
+
+    console.error(d.width);
+    return 5;
     var offset = 26;
-    if(d._width === 24) offset = 7;
-    return d._width/2 - offset;
+    if (d._width === 24) offset = 7;
+    return d._width / 2 - offset;
   };
 
   styling.labeldy = function (d) {
     var pad = d.pad || 0;
-    return d._height/2 + 5;
+    return d._height / 2 + 5;
   };
 
   styling.labelText = function (d) {
@@ -40,7 +43,7 @@
   };
 
 
-  
+
   styling.options = {
     'showLabels': true,
     'cornerradius': 0
@@ -51,7 +54,7 @@
     'noconst': 50,
     'userconst': 100,
     'layoutconst': 200,
-    'linkdist': 115,
+    'linkdist': 100,
     'jaccard': 0,
     'symmetric': 0,
     'constgap': 40,
@@ -84,7 +87,7 @@
 
 
 
-      if( typeof renderer.options['fillprop'] == 'boolean' && !renderer.options['fillprop']) // by default color is white
+      if (typeof renderer.options['fillprop'] == 'boolean' && !renderer.options['fillprop']) // by default color is white
       {
         return "white";
       }
@@ -461,7 +464,7 @@
         })
         .call(renderer.colajs.drag);
 
-      renderer.nodes.append('rect')
+      renderer.rects = renderer.nodes.append('rect')
         .attr('class', function (d) {
           var className = 'node';
           if (d._temp) {
@@ -471,10 +474,12 @@
         })
         .attr('width', function (d) {
           if (d._temp && renderer.options['layoutnode']) return 10;
+
+
           return d._width;
         })
         .attr('height', function (d) {
-          if (d._temp && renderer.options['layoutnode']) return 10;
+          if (d._temp && rendrer.options['layoutnode']) return 10;
           return d._height;
         })
         .attr('rx', function (d) {
@@ -489,8 +494,10 @@
           }
           return renderer.options['cornerradius'];
         })
+
         .style('fill', graph.nodeColor)
         .style('stroke', graph.nodeStroke);
+
 
       // Prevent interaction with nodes from causing pan on background
       renderer.nodes
@@ -509,11 +516,23 @@
         text.attr('class', 'text-label')
           .attr('dx', style.labeldx)
           .attr('dy', style.labeldy)
-    
+
           .style('fill', style.labelColor)
-          .style('opacity',1)
+          .style('opacity', 1)
           .style('font-size', style.labelSize)
-          .style('font-style', style.labelStyle);
+          .style('font-style', style.labelStyle)
+          .each((d, i) => {
+
+            let newWidth = text[0][i].getBBox().width + 10;
+
+            if (newWidth > d._width) {
+              d._width = newWidth
+              d.width = d._width;
+
+            }
+          })
+
+
       } else if (renderer.options['showLabelsOnTop']) {
         renderer.textG = renderer.svg.selectAll('.text-label')
           .data(renderer.setcola.nodes)
@@ -577,6 +596,8 @@
           return 'translate(' + x + ',' + y + ')';
         }
       });
+
+      renderer.rects.attr('width', d => d._width);
 
       // Update the labels
       if (renderer.options['showLabelsOnTop']) {
@@ -834,7 +855,11 @@
     renderer.defaultOptions = function (layout) {
       var type = layout.nodes[renderer.options['fillprop']];
 
-         renderer.color = (typeof type == 'string') ? d3.scaleOrdinal(d3.schemeDark2) : d3.scaleSequential(d3.interpolateYlGnBu);
+      renderer.color = (typeof type == 'string') ? d3.scaleOrdinal(d3.schemeDark2) : d3.scaleSequential(d3.interpolateYlGnBu);
+
+
+
+      console.warn("defaultOptions()");
 
 
       layout.nodes.forEach(function (node) {
