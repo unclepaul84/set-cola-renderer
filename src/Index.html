@@ -3,15 +3,24 @@
 <head>
     <meta charset="utf-8">
     <title>Render</title>
-</head>
-<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<script src="https://d3js.org/d3-timer.v1.min.js"></script>
-<script src="https://d3js.org/d3-color.v1.min.js"></script>
-<script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
-<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-<script src="https://d3js.org/d3-scale.v1.min.js"></script>
-<script src="https://d3js.org/d3-shape.v1.min.js"></script>
+    <style>
+        path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
 
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+    </style>
+</head>
+<script src="js/d3.v3.js" charset="utf-8"></script>
 <script src="js/cola.min.js"></script>
 
 <script src="js/setcola.js"></script>
@@ -20,12 +29,7 @@
 
 <body>
     <svg class="graph" style="height: 500px; width:100%">
-        <defs>
-            <filter x="0" y="0" width="1" height="1" id="solid">
-                <feFlood flood-color="white" />
-                <feComposite in="SourceGraphic" />
-            </filter>
-        </defs>
+       
     </svg>
 </body>
 
@@ -34,10 +38,10 @@
     let r = new setColaRenderer();
 
    
-/* 
+
     var graph = {
         "nodes": [
-            { "name": "aaaaaaaaajbobojbjbojbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbba",},
+            { "name": "aaaaaaaaaj"},
             { "name": "bbbbbbbbbb" }
         ],
         "links": [
@@ -51,21 +55,7 @@
         ]
     };
 
- */
 
- 
- var graph = {
-        "nodes": [
-            { "name": "aaaaaaaaajbobojbjbojbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbba",},
-            { "name": "bbbbbbbbbb" }
-        ],
-        "links": [
-            { "source": 0, "target": 1 }
-        ],
-        "constraintDefinitions": [
-         
-        ]
-    };
 
     var layout = setcola
         .nodes(graph.nodes)

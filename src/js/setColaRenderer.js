@@ -10,7 +10,7 @@
 
   styling.labeldx = function (d) {
 
-    console.error(d.width);
+
     return 5;
     var offset = 26;
     if (d._width === 24) offset = 7;
@@ -54,8 +54,8 @@
     'noconst': 50,
     'userconst': 100,
     'layoutconst': 200,
-    'linkdist': 100,
-    'jaccard': 0,
+    'linkdist': 0,
+    'jaccard': 100,
     'symmetric': 0,
     'constgap': 40,
     'nodesize': 30,
@@ -181,9 +181,9 @@
 
       // Start the cola.js layout
       renderer.colajs
-        .avoidOverlaps(renderer.options['overlaps'])
+        .avoidOverlaps(true)
         .convergenceThreshold(1e-3)
-        .handleDisconnected(false);
+        .handleDisconnected(true);
 
       if (renderer.options['linkdist'] != 0) {
         renderer.colajs.linkDistance(function (d) {
@@ -204,10 +204,31 @@
       // Set up zoom behavior on the graph svg.
       renderer.zoom = d3.behavior.zoom().scaleExtent([0.25, 2]).on('zoom', zoomed);
 
+
+
+      
+      var todaySod = new Date();
+      todaySod.setHours(0, 0, 0, 1);
+
+      var todayEod = new Date();
+
+      todayEod.setHours(23, 59);
+      // Set the ranges
+
+      var x = d3.time.scale().domain([todaySod, todayEod]).range([0, width]);
+
+
+      var xAxis = d3.svg.axis().scale(x)
+        .orient("bottom").ticks(12);
+
+
       var svg = d3.select('.' + renderer.options['targetsvgclass']).append('g')
         .attr('transform', 'translate(0,0)')
         .call(renderer.zoom)
+
         .on('click', renderer.opacity);
+
+
 
       // Draw an invisible background to capture zoom events
       var rect = d3.select('.' + renderer.options['targetsvgclass']).select('g').append('rect')
@@ -219,6 +240,13 @@
       // Draw the graph
       renderer.svg = svg.append('g').attr('id', 'zoomg');
       renderer.options['curved'] ? renderer.drawCurvedLinks() : renderer.options['multiple'] ? renderer.drawMultipleLinks() : renderer.drawLinks();
+
+
+      renderer.svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + (height - 50) + ")")
+        .call(xAxis);
+
       if (renderer.setcola.groups) renderer.drawGroups();
       renderer.drawNodes();
 
@@ -855,7 +883,7 @@
     renderer.defaultOptions = function (layout) {
       var type = layout.nodes[renderer.options['fillprop']];
 
-      renderer.color = (typeof type == 'string') ? d3.scaleOrdinal(d3.schemeDark2) : d3.scaleSequential(d3.interpolateYlGnBu);
+      renderer.color = function () { return "white"; };// (typeof type == 'string') ? d3.scaleOrdinal(d3.schemeDark2) : d3.scaleSequential(d3.interpolateYlGnBu);
 
 
 
